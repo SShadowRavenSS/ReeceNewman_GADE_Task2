@@ -24,10 +24,10 @@ namespace Units
         private void frmBattleSim_Load(object sender, EventArgs e)
         {
 
-            gameEngine = new GameEngine(5);
-            lblMap.Text = gameEngine.Map.convertMap();
+            gameEngine = new GameEngine(5); //Create a new instance of the game engine class
+            lblMap.Text = gameEngine.Map.convertMap(); //Updates the map
             
-            rtxUnitInfo.Text = gameEngine.getStats(gameEngine.Map.Units,gameEngine.Map.Buildings);
+            rtxUnitInfo.Text = gameEngine.getStats(gameEngine.Map.Units,gameEngine.Map.Buildings); //Updates the unit info
             
         }
 
@@ -35,35 +35,26 @@ namespace Units
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            tmrOnly.Enabled = true;
-            tmrOnly.Start();
+            tmrOnly.Enabled = true; //Enables timer
+            tmrOnly.Start(); //Starts timer
         }
 
         private void playGame(object sender, EventArgs e)
         {
-            gameEngine.gameLogic(gameEngine.Map.Units, gameEngine.Map.Buildings);
-            lblMap.Text = gameEngine.Map.convertMap();
-            lblTimer.Text = Convert.ToString(Convert.ToInt32(lblTimer.Text) + 1);
-            rtxUnitInfo.Text = gameEngine.getStats(gameEngine.Map.Units, gameEngine.Map.Buildings);
+            gameEngine.gameLogic(gameEngine.Map.Units, gameEngine.Map.Buildings); //Calls the game logic method from the game engine
+            lblMap.Text = gameEngine.Map.convertMap(); //Updates map display on the form
+            lblTimer.Text = Convert.ToString(Convert.ToInt32(lblTimer.Text) + 1); //updates the timer on the form
+            rtxUnitInfo.Text = gameEngine.getStats(gameEngine.Map.Units, gameEngine.Map.Buildings); //updates units statson the form
         }
 
         private void btnPause_Click(object sender, EventArgs e)
         {
-            tmrOnly.Stop();
+            tmrOnly.Stop(); //Pauses the timer
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-           // if (!Directory.Exists("saves"))
-            //{
-              //  Directory.CreateDirectory("saves");
-
-                //if (!Directory.Exists("saves/units"))
-                //{
-                  //  Directory.CreateDirectory("saves/units");
-                //}
-
-            //}
+           //Creates all the nessasary directories
             Directory.CreateDirectory("saves");
             Directory.CreateDirectory("saves/units");
             Directory.CreateDirectory("saves/buildings");
@@ -74,11 +65,13 @@ namespace Units
             FileStream fs1 = new FileStream("saves/buildings/saves.game", FileMode.Create, FileAccess.Write); //opens a new filestream and creates and overrides file if it does not exist 
             fs1.Close(); // closes filestream
 
+            //Loop runs through all the units and calls their save method
             for (int i = 0; i < gameEngine.Map.units.Length; i++)
             {
                 gameEngine.Map.units[i].save();
             }
 
+            //Loop runs through all the buildings and calls their save methods
             for (int k = 0; k < gameEngine.Map.Buildings.Length; k++)
             {
                 gameEngine.Map.Buildings[k].save();
@@ -87,9 +80,9 @@ namespace Units
 
         private void btnRead_Click(object sender, EventArgs e)
         {
-            gameEngine.Map.read();
-            tmrOnly.Enabled = true;
-            tmrOnly.Start();
+            gameEngine.Map.read(); //Calls the map read method to load a previous save
+            tmrOnly.Enabled = true; //Enables the timer
+            tmrOnly.Start(); //Starts the timer
         }
     }
 }
