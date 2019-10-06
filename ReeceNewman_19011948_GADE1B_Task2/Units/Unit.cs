@@ -8,6 +8,7 @@ namespace Units
 {
     public abstract class Unit
     {
+        //Variable declarations
         protected int faction;
         protected bool isDead;
         protected char symbol;
@@ -20,13 +21,10 @@ namespace Units
         protected int attack;
         protected int attackRange;
         protected string name;
-
-
-
         private Random rng = new Random();
 
 
-
+        //Accessors for the variables
         public int XPos { get => xPos; set => xPos = value; }
         public int YPos { get => yPos; set => yPos = value; }
         public int Health { get => health; set => health = value; }
@@ -40,6 +38,7 @@ namespace Units
         public bool IsDead { get => isDead;}
         public string Name { get => name; set => name = value; }
 
+        //Constructor for the unit class that sets all values passed in as parameters to the class variables values
         public Unit(int xPos, int yPos, int health, int faction, int speed, int attack, int attackRange, char symbol, int maxHealth, string name)
         {
             this.xPos = xPos;
@@ -55,12 +54,15 @@ namespace Units
             this.name = name;
         }
 
+        //abstract defenition for save method
         public abstract void save();
 
+        //Checks if the passed in unit is in range of the current unit
         public bool attackingRange(Unit unit)
         {
 
             bool isInRange = false;
+            //Checks if the distance is greater than the attack range and then sets relevant boolean
             if (Math.Abs(unit.XPos - this.XPos) > this.AttackRange && Math.Abs(unit.YPos - this.YPos) > this.AttackRange)
             {
                 isInRange = false;
@@ -70,26 +72,29 @@ namespace Units
                 isInRange = true;
             }
 
+            //returns boolean
             return isInRange;
         }
 
+        //returns the closest unit to the current unit
         public Unit closestUnit(Unit[] units)
         {
             int lowestDist = int.MaxValue;
             int closestUnit = int.MaxValue;
             int thisUnit = 0;
 
+            //runs a loop through all the units in the array
             for (int k = 0; k < units.Length; k++)
             {
-
+                //checks that the unit is not dead
                 if (units[k].isDead == false)
                 {
-
+                    //determines the distance of the unit
                     int dist = Math.Abs(units[k].XPos - this.XPos) + Math.Abs(units[k].YPos - this.YPos);
 
-                    if (dist != 0)
+                    if (dist != 0) //checks if the unit it is checking is not itself
                     {
-
+                        //checks if the unit is closer than any other previous unit and if so saves that units index and distance
                         if (dist < lowestDist && units[k].Faction != this.Faction)
                         {
                             lowestDist = dist;
@@ -105,7 +110,7 @@ namespace Units
                 }
 
             }
-
+            //check to ensure integrety of code by returning either this unit or the closest unit determined
             if (closestUnit != int.MaxValue)
             {
                 return units[closestUnit];
@@ -117,17 +122,19 @@ namespace Units
 
         }
 
+        //Method that attacks the passed in unit
         public void combat(Unit unitToAttack)
         {
-
+            //subtracts health equal to this units attack
             unitToAttack.Health -= this.Attack;
             this.IsAttacking = true;
 
         }
 
+        //method that checks for death
         public void death()
         {  
-
+            //if this units health is equal to or below zero it will return true else false
             if (this.Health >= 0)
             {
                 isDead = false;
@@ -139,6 +146,7 @@ namespace Units
 
         }
 
+        //Method that moves unit towards passed in unit
         public void movement(Unit moveToUnit, int mapSizeX, int mapSizeY)
         {
             this.IsAttacking = false; //Since this unit is moving it is not attacking so set relevant boolean false
@@ -158,7 +166,7 @@ namespace Units
                             if(this.yPos - 1 > 0)
                             {
 
-                                this.yPos -= 1; //Moves unit
+                                this.yPos -= 1; //Moves unit up
                                 
                             }
                             break;
@@ -168,7 +176,7 @@ namespace Units
                             if (this.yPos + 1 < mapSizeY)
                             {
 
-                                this.YPos += 1; //Moves unit
+                                this.YPos += 1; //Moves unit down
                                 
                             }
                             break;
@@ -178,7 +186,7 @@ namespace Units
                             if (this.xPos - 1 > 0)
                             {
 
-                                this.xPos -= 1; //Moves unit
+                                this.xPos -= 1; //Moves unit left
                                 
                             }
                             break;
@@ -188,7 +196,7 @@ namespace Units
                             if (this.xPos + 1 < mapSizeX)
                             {
 
-                                this.xPos += 1; //Moves unit
+                                this.xPos += 1; //Moves unit right
 
                             }
                             break;
@@ -199,16 +207,17 @@ namespace Units
             }
             else
             {
+                //determines if the unit is furthar in the y or the x
                 if (Math.Abs(moveToUnit.XPos - this.XPos) > Math.Abs(moveToUnit.YPos - this.YPos))
                 {
-
+                    //determines left or right movement
                     if (moveToUnit.XPos - this.xPos > 0)
                     {
-
+                        //ensures no out of bounds movement
                         if (this.xPos + 1 < mapSizeX)
                         {
 
-                            this.XPos += 1; //Moves unit
+                            this.XPos += 1; //Moves unit right
 
                         }
 
@@ -216,10 +225,11 @@ namespace Units
                     else if (moveToUnit.xPos - this.XPos < 0)
                     {
 
+                        //ensures no out of bounds movement
                         if (this.xPos - 1 > 0)
                         {
 
-                            this.xPos -= 1; //Moves unit
+                            this.xPos -= 1; //Moves unit left
 
                         }
 
@@ -228,14 +238,15 @@ namespace Units
                 }
                 else
                 {
-
+                    //determines up or down movement
                     if (moveToUnit.yPos - this.yPos > 0)
                     {
 
+                        //ensures no out of bounds movement
                         if (this.yPos + 1 < mapSizeY)
                         {
 
-                            this.yPos += 1; //Moves unit
+                            this.yPos += 1; //Moves unit down
 
                         }
 
@@ -243,10 +254,11 @@ namespace Units
                     else if (moveToUnit.yPos - this.yPos < 0)
                     {
 
+                        //ensures no out of bounds movement
                         if (this.yPos - 1 > 0)
                         {
 
-                            this.yPos -= 1; //Moves unit
+                            this.yPos -= 1; //Moves unit up
 
                         }
 
