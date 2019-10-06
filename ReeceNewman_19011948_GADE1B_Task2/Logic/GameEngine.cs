@@ -8,20 +8,21 @@ namespace Units
 {
     public class GameEngine
     {
-        
+        //variable declarations
         private Map map;
         int counter = 0;
         public Map Map { get => map; }
         
-
+        //Constructor for gameEngine
         public GameEngine(int numberOfUnits)
         {
-
+            //Creates new map and generates new battlefield
             map = new Map(numberOfUnits, 20, 20, 6);
             map.newBattlefield();
             
         } 
 
+        //Method that controls the game on every tick of the timer
         public void gameLogic(Unit[] unit, Buildings.Building[] bldings)
         {
             
@@ -53,40 +54,47 @@ namespace Units
                 
             }
 
+            //loop that runs through all the buildings 
             for (int p = 0; p < bldings.Length; p++)
             {
                 string type = bldings[p].GetType().ToString();
                 string[] typeArr = type.Split('.');
                 type = typeArr[typeArr.Length - 1];
 
+                //Checks type of building
                 if (type == "ResourceBuilding")
                 {
+                    //creates temp instance of resourcebuilding
                     Buildings.ResourceBuilding rblding = (Buildings.ResourceBuilding)bldings[p];
 
+                    //calls the generate resource method
                     rblding.GenerateResources();
                     
                 }
                 else
                 {
+                    //creates temp instance of factorybuilding
                     Buildings.FactoryBuilding fblding = (Buildings.FactoryBuilding)bldings[p];
                     
+                    //checks if the building should be generating a unit
                     if(fblding.ProductionSpeed <= counter)
                     {
-
+                        //If so create a temp unit and save it in the map array after resizing it
                         Unit temp = fblding.SpawnUnits();
                         Array.Resize(ref map.units, map.Units.Length + 1);
                         map.Units[map.Units.Length - 1] = temp;
-                        resetCounter = true;
+                        resetCounter = true; //Set boolean to reset counter
                     }
                     else
                     {
+                        //if not set boolean not to reset counter
                         resetCounter = false;
                     }
                     
                 }
             }
 
-            
+            //checks whether counter should be reset or incrimented
             if(resetCounter == true)
             {
                 resetCounter = false;
@@ -100,6 +108,7 @@ namespace Units
             
         }
 
+        //Method that 'fetches' all the buildings and all the unit stats and returns the formatted string of it all combined
         public string getStats(Unit[] unit, Buildings.Building[] bldnings)
         {
             string stats = "";
