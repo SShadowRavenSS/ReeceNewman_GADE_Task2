@@ -9,12 +9,13 @@ namespace Units
 {
     public class MeleeUnit : Unit
     {
-
+        //Constructor initialzer for the meleeUnit class that send values through to the base class
         public MeleeUnit(int xPos, int yPos, int health, int speed, int range, char symbol, int attack, int faction, int maxHealth, string name ) : base(xPos, yPos, health, faction, speed, attack, range, symbol, maxHealth, name)
         {
 
         }
 
+        //method that saves the unit into a file
         public override void save()
         {
             FileStream fs = new FileStream("saves/units/saves.game", FileMode.Append, FileAccess.Write);
@@ -26,6 +27,7 @@ namespace Units
             fs.Close();
         }
 
+        //Method that generates and returns a formatted string for saving purposes
         private string saveFormatter()
         {
             string output = "";
