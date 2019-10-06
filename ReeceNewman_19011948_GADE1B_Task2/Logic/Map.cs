@@ -10,13 +10,14 @@ namespace Units
 {
     public class Map
     {
+        //variable declarations
         private char[,] map;
         private int mapSizeX, mapSizeY;
         Random rng = new Random();
         public Unit[] units;
         private Buildings.Building[] buildings;
         
-
+        //accessors
         public char[,] MapDisplay { get => map; set => map = value; }
         public int MapSizeX { get => mapSizeX; }
         public int MapSizeY { get => mapSizeY; }
@@ -24,6 +25,7 @@ namespace Units
         public Unit[] Units { get => units; set => units = value; }
         public Building[] Buildings { get => buildings; }
 
+        //constructor for map that takes in parameters and creates correcttly sized arrays
         public Map(int numOfUnits, int mapSizeX, int mapsizeY, int numOfBuildings)
         {
 
@@ -37,20 +39,22 @@ namespace Units
         }
 
         
-
+        //Generates an initial battlefield
         public void newBattlefield()
         {
+            //temp variables to store randomed numbers
             int xPos, yPos, type, faction;
             
-
+            //loop that runs through all the units
             for (int l = 0; l < Units.Length; l++)
             {
+                //randoms values for unit creation
                 xPos = Rng.Next(0, mapSizeX);
                 yPos = Rng.Next(0, mapSizeY);
                 type = Rng.Next(0, 2);
                 faction = Rng.Next(0, 2);
                 
-
+                //creates units based on their randomed values and saves them in relevant array
                 if (type == 0 && faction == 0)
                 {
                     MeleeUnit unit = new MeleeUnit(xPos,yPos,120,1,1,'M',10,faction,120, "Knight");
@@ -73,14 +77,17 @@ namespace Units
                 }
             }
 
+            //loop to run through all the buildings
             for (int k = 0; k < buildings.Length; k++)
             {
+                //randoms values for building creation
                 xPos = Rng.Next(0, mapSizeX);
                 yPos = Rng.Next(0, mapSizeY);
                 type = Rng.Next(0, 2);
                 faction = Rng.Next(0, 2);
                 int bldingType = rng.Next(0, 2);
 
+                //Creates buildings based on values and saves them in relevant array
                 if (bldingType == 0 && type == 0 && faction == 0)
                 {
                     if(map.Length -1 == yPos)
@@ -149,10 +156,12 @@ namespace Units
                 }
             }
 
+            //calls the method that fills the map array with all needed info
             populateMap();
                        
         }
 
+        //Method that formats the map array into a string and returns that string
         public string convertMap()
         {
             string mapOutput = "";
@@ -169,9 +178,10 @@ namespace Units
             return mapOutput;
         }
 
+        //Method that 'refreshes map' by regenerating it 
         public void populateMap()
         {
-            
+            //Populates entire map with 'grass'
             for (int i = 0; i < MapSizeY; i++)
             { 
 
@@ -182,11 +192,13 @@ namespace Units
                 
             }
 
+            //Calls the insert units method for each unit
             for (int m = 0; m < Units.Length; m++)
             {              
                 insertUnits(Units[m]);               
             }
 
+            //calls the insert buildings method for each building
             for (int o = 0; o < buildings.Length; o++)
             {
                 insertBuildings(buildings[o]);
@@ -194,6 +206,7 @@ namespace Units
             
         }
 
+        //Inserts a unit into the array in the correct poition based on that units x and y coordinates
         private void insertUnits(Unit unit)
         {
 
@@ -204,6 +217,7 @@ namespace Units
             
         }
 
+        //inserts a building into the map array in the correct position based on its x and y coordinates 
         private void insertBuildings(Building blding)
         {
             string type = blding.GetType().ToString();
@@ -222,6 +236,7 @@ namespace Units
             }
         }
 
+        //Method that loads all the saved values from the save file
         public void read()
         {
             FileStream fs = new FileStream("saves/units/saves.game", FileMode.Open, FileAccess.Read); //opens file to be read
@@ -236,7 +251,9 @@ namespace Units
                 Array.Resize(ref units, units.Length + 1);
 
                 string[] lineArr = line.Split(','); //Splits the read line at ',' and saves it into array
-                char symbol = Convert.ToChar(lineArr[5]); //adds each read number into temp variable
+
+                //adds each read number into temp variable
+                char symbol = Convert.ToChar(lineArr[5]); 
                 int xPos = Convert.ToInt32(lineArr[0]);
                 int yPos = Convert.ToInt32(lineArr[1]);
                 int health = Convert.ToInt32(lineArr[2]);
@@ -247,16 +264,17 @@ namespace Units
                 int maxHealth = Convert.ToInt32(lineArr[8]);
                 string name = lineArr[9];
 
+                //check faction
                 if (symbol == 'r' || symbol == 'R')
                 {
-
+                    //Creates units with saved values in the correct positions and saves it to the unit array
                     RangedUnit tempUnit = new RangedUnit(xPos, yPos, health, speed, attackRange, symbol, attack, faction, maxHealth, name);
                     units[units.Length - 1] = tempUnit;
 
                 }
                 else
                 {
-
+                    //Creates units with saved values in the correct positions and saves it to the unit array
                     MeleeUnit tempUnit = new MeleeUnit(xPos, yPos, health, speed, attackRange, symbol, attack, faction, maxHealth, name);
                     units[units.Length - 1] = tempUnit;
 
@@ -283,9 +301,10 @@ namespace Units
                 string[] lineArr = linebuild.Split(','); //Splits the read line at ',' and saves it into array
                 char symbol = Convert.ToChar(lineArr[4]); //adds each read number into temp variable
                 
-
+                //Checks team
                 if (symbol == 'f' || symbol == 'F')
                 {
+                    //adds each read number into temp variable
                     int xPos = Convert.ToInt32(lineArr[0]);
                     int yPos = Convert.ToInt32(lineArr[1]);
                     int health = Convert.ToInt32(lineArr[2]);
@@ -293,12 +312,14 @@ namespace Units
                     int faction = Convert.ToInt32(lineArr[5]);
                     int maxHealth = Convert.ToInt32(lineArr[6]);
 
+                    //Creates buildings with saved values in the correct positions and saves it to the building array
                     FactoryBuilding tempUnit = new FactoryBuilding(xPos, yPos, health, faction,symbol,unitType,false, maxHealth);
                     buildings[buildings.Length-1] = tempUnit;
 
                 }
                 else
                 {
+                    //adds each read number into temp variable
                     int xPos = Convert.ToInt32(lineArr[0]);
                     int yPos = Convert.ToInt32(lineArr[1]);
                     int health = Convert.ToInt32(lineArr[2]);
@@ -310,6 +331,7 @@ namespace Units
                     int resourcePoolRemaining = Convert.ToInt32(lineArr[8]);
                     int maxPool = Convert.ToInt32(lineArr[10]);
 
+                    //Creates buildings with saved values in the correct positions and saves it to the building array
                     ResourceBuilding tempUnit = new ResourceBuilding(xPos, yPos, health, faction,symbol,maxPool,resourcesPerRound, maxHealth);
                     buildings[buildings.Length-1] = tempUnit;
 
@@ -320,7 +342,7 @@ namespace Units
             }
 
             fsBuild.Close(); //Closes the filestream
-            populateMap();
+            populateMap(); //calls the map refresh method
         }
 
         
